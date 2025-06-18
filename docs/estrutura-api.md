@@ -19,8 +19,8 @@
 | GET    | `/transacao/dados/cliente_id/:ClientId`       | 🔒 Listar todas as transações do cliente          | ✅        |
 | GET    | `/transacao/dados/:id`                        | 🔒 Buscar detalhes de uma transação               | ✅        |
 | POST   | `/transacao`                                  | 🔒 Criar nova transação                           | ✅        |
-| PUT    | `/transacao/editar/cliente_id/:ClientId`      | 🔒 Atualizar transação                            | ✅        |
-| DELETE | `/transacao/excluir/cliente_id/:ClientId`     | 🔒 Deletar transação                              | ✅        |
+| PUT    | `/transacao/editar/cliente_id/:ClientId`  -   | 🔒 Atualizar transação                            | ✅        |
+| DELETE | `/transacao/excluir/cliente_id/:ClientId` -   | 🔒 Deletar transação                              | ✅        |
 
 > 💡 **Recomendação**: use `req.cliente.id` a partir do token JWT, em vez de passar `ClientId` na URL.
 
@@ -31,8 +31,8 @@
 | Método | Rota                          | Descrição                                  | Protegida |
 |--------|-------------------------------|--------------------------------------------|-----------|
 | GET    | `/relatorio/saldo`            | 🔒 Retorna o saldo atual do cliente logado | ✅        |
-| GET    | `/relatorio/categoria`        | 🔒 Total gasto/recebido por categoria      | ✅        |
-| GET    | `/relatorio/periodo`          | 🔒 Total gasto/recebido por período        | ✅        |
+| GET    | `/relatorio/categoria`   -    | 🔒 Total gasto/recebido por categoria      | ✅        |
+| GET    | `/relatorio/periodo`     -    | 🔒 Total gasto/recebido por período        | ✅        |
 
 ---
 

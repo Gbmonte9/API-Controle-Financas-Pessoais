@@ -1,0 +1,54 @@
+doctype html
+html
+  head
+    title Login
+  body
+    h1 Login
+
+    if erro
+      p(style="color: red")= erro
+
+    form(onsubmit="login(event)")
+      div
+        label(for="email") Email:
+        input(type="email", name="email", required)
+      div
+        label(for="senha") Senha:
+        input(type="password", name="senha", required)
+      div
+        button(type="submit") Entrar
+
+    script.
+      async function login(event) {
+        event.preventDefault();
+
+        const email = document.querySelector('input[name="email"]').value;
+        const senha = document.querySelector('input[name="senha"]').value;
+
+        try {
+          const response = await fetch('/cliente/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, senha })
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            alert(data.erro || 'Erro ao fazer login');
+            return;
+          }
+
+          // Salva o token localmente
+          localStorage.setItem('token', data.token);
+
+          alert('Login realizado com sucesso!');
+          window.location.href = '/dashboard'; // redireciona após login
+
+        } catch (err) {
+          console.error(err);
+          alert('Erro de conexão com o servidor');
+        }
+      }

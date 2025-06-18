@@ -87,6 +87,7 @@ router.post('/registrar', async function(req, res, next) {
     console.error('Erro ao registrar cliente:', err);
     res.status(500).json({ erro: 'Erro ao registrar cliente' });
   }
+  
 });
 
 router.post('/login', async function (req, res) {
