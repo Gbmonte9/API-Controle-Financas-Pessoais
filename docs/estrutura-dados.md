@@ -34,11 +34,11 @@ CREATE TABLE transacao (
 
 ### Fluxo:
 
-1. **Registro (POST `/clientes/registrar`)**
+1. **Registro (POST `/cliente/registrar`)**
    - Envia: `nome`, `email`, `senha`
    - A senha é criptografada com bcrypt
 
-2. **Login (POST `/clientes/login`)**
+2. **Login (POST `/cliente/login`)**
    - Envia: `email`, `senha`
    - Se estiver correto, gera um JWT token
 

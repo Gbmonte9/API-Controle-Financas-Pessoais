@@ -1,64 +1,49 @@
-# Planejamento das Rotas HTTP da API de Controle de Finanças Pessoais
 
-1. Rotas do Cliente (usuário)
+# 📘 Documentação da API REST - Controle de Finanças Pessoais
 
-| Método | Rota                  | Descrição                  | Protegida? |
-| ------ | --------------------- | -------------------------- | ---------- |
-| POST   | `/cliente/registrar` | Cadastrar novo cliente      | Não        |
-| POST   | `/cliente/login`     | Login e receber token JWT   | Não        |
-| GET    | `/cliente/perfil`    | Ver perfil do cliente       | Sim        |
-| PUT    | `/cliente/perfil`    | Atualizar dados do cliente  | Sim        |
+## 🔹 Rotas de Cliente
 
-2. Rotas de Transações (Receitas e Despesas)
+| Método | Rota                              | Descrição                                                           | Protegida |
+|--------|-----------------------------------|----------------------------------------------------------------------|-----------|
+| GET    | `/cliente/dados`                  | 🔒 Listar **somente os dados do cliente logado**                    | ✅        |
+| GET    | `/cliente/dados/email/:email`     | 🔒 Buscar cliente pelo email (útil apenas se for admin/autenticado) | ✅        |
+| POST   | `/cliente/registrar`              | Registrar novo cliente                                              | ❌        |
+| POST   | `/cliente/login`                  | Login e geração do token JWT                                        | ❌        |
 
-| Método | Rota              | Descrição                              | Protegida? |
-| ------ | ----------------- | -------------------------------------- | ---------- |
-| POST   | `/transacao`     | Criar nova transação (receita/despesa) | Sim        |
-| GET    | `/transacao`     | Listar todas as transações do cliente  | Sim        |
-| GET    | `/transacao/:id` | Buscar detalhes de uma transação       | Sim        |
-| PUT    | `/transacao/:id` | Atualizar uma transação                | Sim        |
-| DELETE | `/transacao/:id` | Deletar uma transação                  | Sim        |
+---
 
-3. Rotas para Relatórios e Filtros
+## 🔹 Rotas de Transações
 
-| Método | Rota                        | Descrição                                  | Protegida? |
-| ------ | --------------------------- | ------------------------------------------ | ---------- |
-| GET    | `/relatorio/saldo`          | Saldo atual do cliente                     | Sim        |
-| GET    | `/relatorio/por-categoria`  | Total gasto/recebido por categoria         | Sim        |
-| GET    | `/relatorio/por-periodo`    | Total gasto/recebido por período (ex: mês) | Sim        |
+| Método | Rota                                          | Descrição                                         | Protegida |
+|--------|-----------------------------------------------|---------------------------------------------------|-----------|
+| GET    | `/transacao/dados/cliente_id/:ClientId`       | 🔒 Listar todas as transações do cliente          | ✅        |
+| GET    | `/transacao/dados/:id`                        | 🔒 Buscar detalhes de uma transação               | ✅        |
+| POST   | `/transacao`                                  | 🔒 Criar nova transação                           | ✅        |
+| PUT    | `/transacao/editar/cliente_id/:ClientId`      | 🔒 Atualizar transação                            | ✅        |
+| DELETE | `/transacao/excluir/cliente_id/:ClientId`     | 🔒 Deletar transação                              | ✅        |
 
-4. (Opcional) Rotas Extras
+> 💡 **Recomendação**: use `req.cliente.id` a partir do token JWT, em vez de passar `ClientId` na URL.
 
-| Método | Rota          | Descrição                     | Protegida? |
-| ------ | ------------- | ----------------------------- | ---------- |
-| POST   | `/categorias` | Criar categoria personalizada | Sim        |
-| GET    | `/categorias` | Listar categorias do cliente  | Sim        |
+---
 
-5. API REST
+## 🔹 Rotas de Relatórios
 
-| Método | Rota                     | Descrição                                                           |
-| ------ | ------------------------ | ------------------------------------------------------------------- |
-| GET    | `/cliente`               | Listar todos os clientes (ou só seu próprio perfil, se autenticado) |
-| GET    | `/cliente/email/:email`  | Buscar cliente pelo email                                           |
-| POST   | `/cliente/registrar`     | Registrar novo cliente                                              |
-| POST   | `/cliente/login`         | Login e receber token JWT                                           |
+| Método | Rota                          | Descrição                                  | Protegida |
+|--------|-------------------------------|--------------------------------------------|-----------|
+| GET    | `/relatorio/saldo`            | 🔒 Retorna o saldo atual do cliente logado | ✅        |
+| GET    | `/relatorio/categoria`        | 🔒 Total gasto/recebido por categoria      | ✅        |
+| GET    | `/relatorio/periodo`          | 🔒 Total gasto/recebido por período        | ✅        |
 
+---
 
-| Método | Rota                         | Descrição                                         |
-| ------ | ---------------------------  | ------------------------------------------------- |
-| GET    | `/transacao/:idCliente`      | Listar todas as transações do cliente (via token) |
-| GET    | `/transacao/:id`             | Buscar detalhes de uma transação                  |
-| POST   | `/transacao`                 | Criar nova transação                              |
-| PUT    | `/transacao/editar/:id`      | Atualizar transação                               |
-| DELETE | `/transacao/excluir/:id`     | Deletar transação                                 |
+## ✅ Boas práticas REST aplicadas
 
+- 🔐 Uso de JWT para autenticação
+- ❌ Senhas nunca são retornadas, mesmo criptografadas
+- 📦 JSON como padrão de entrada/saída
+- 🔒 Rotas protegidas com middleware `autenticarToken`
+- 🧼 `id` do cliente obtido do token em vez de passar na URL
 
-| Método | Rota                    | Descrição                                  |
-| ------ | ----------------------- | ------------------------------------------ |
-| GET    | `/relatorio/saldo`      | Saldo atual do cliente                     |
-| GET    | `/relatorio/categoria`  | Total gasto/recebido por categoria         |
-| GET    | `/relatorio/periodo`    | Total gasto/recebido por período (ex: mês) |
+---
 
-
-
-
+Feito por Gabriel Monte 🧠💻
