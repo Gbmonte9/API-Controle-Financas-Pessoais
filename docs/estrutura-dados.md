@@ -6,26 +6,26 @@
 ### 🧑 Tabela: clientes
 
 ```sql
-CREATE TABLE clientes (
-  id UUID PRIMARY KEY,
-  nome TEXT NOT NULL,
-  email TEXT UNIQUE NOT NULL,
-  senha TEXT NOT NULL,
-  criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE cliente (
+  id SERIAL PRIMARY KEY,
+  nome VARCHAR(100) NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  senha VARCHAR(100) NOT NULL,
+  ativo BOOLEAN NOT NULL DEFAULT true,
+  criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,      
 );
 ```
 
 ### 💰 Tabela: transacoes
 
 ```sql
-CREATE TABLE transacoes (
-  id UUID PRIMARY KEY,
-  cliente_id UUID REFERENCES clientes(id) ON DELETE CASCADE,
-  tipo VARCHAR(10) NOT NULL, -- 'receita' ou 'despesa'
-  descricao TEXT NOT NULL,
-  valor NUMERIC(10,2) NOT NULL,
-  categoria TEXT,
-  data DATE NOT NULL,
+CREATE TABLE transacao (
+  id SERIAL PRIMARY KEY,
+  cliente_id INTEGER REFERENCES cliente(id),
+  tipo VARCHAR(50) NOT NULL,
+  descricao VARCHAR(100) NOT NULL,
+  valor DECIMAL(10, 2) NOT NULL,
+  categoria VARCHAR(100) NOT NULL,
   criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ```

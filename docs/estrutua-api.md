@@ -38,19 +38,19 @@
 
 | Método | Rota                     | Descrição                                                           |
 | ------ | ------------------------ | ------------------------------------------------------------------- |
-| GET    | `/clientes`              | Listar todos os clientes (ou só seu próprio perfil, se autenticado) |
-| GET    | `/clientes/email/:email` | Buscar cliente pelo email                                           |
-| POST   | `/clientes/registrar`    | Registrar novo cliente                                              |
-| POST   | `/clientes/login`        | Login e receber token JWT                                           |
+| GET    | `/cliente`               | Listar todos os clientes (ou só seu próprio perfil, se autenticado) |
+| GET    | `/cliente/email/:email`  | Buscar cliente pelo email                                           |
+| POST   | `/cliente/registrar`     | Registrar novo cliente                                              |
+| POST   | `/cliente/login`         | Login e receber token JWT                                           |
 
 
-| Método | Rota              | Descrição                                         |
-| ------ | ----------------- | ------------------------------------------------- |
-| GET    | `/transacoes`     | Listar todas as transações do cliente (via token) |
-| GET    | `/transacoes/:id` | Buscar detalhes de uma transação                  |
-| POST   | `/transacoes`     | Criar nova transação                              |
-| PUT    | `/transacoes/:id` | Atualizar transação                               |
-| DELETE | `/transacoes/:id` | Deletar transação                                 |
+| Método | Rota                         | Descrição                                         |
+| ------ | ---------------------------  | ------------------------------------------------- |
+| GET    | `/transacao/:idCliente`      | Listar todas as transações do cliente (via token) |
+| GET    | `/transacao/:id`             | Buscar detalhes de uma transação                  |
+| POST   | `/transacao`                 | Criar nova transação                              |
+| PUT    | `/transacao/editar/:id`      | Atualizar transação                               |
+| DELETE | `/transacao/excluir/:id`     | Deletar transação                                 |
 
 
 | Método | Rota                    | Descrição                                  |
