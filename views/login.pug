@@ -5,50 +5,57 @@ html
   body
     h1 Login
 
-    if erro
-      p(style="color: red")= erro
-
-    form(onsubmit="login(event)")
+    form
       div
         label(for="email") Email:
-        input(type="email", name="email", required)
+        input(type="email", name="email", id="email", required)
       div
         label(for="senha") Senha:
-        input(type="password", name="senha", required)
+        input(type="password", name="senha", id="senha", required)
       div
-        button(type="submit") Entrar
+        button(type="button", id="btnEntrar") Entrar
+      div 
+        a(href="/registrar") Cadastrar
+      div 
+        p(id="message")
 
     script.
-      async function login(event) {
-        event.preventDefault();
+      document.addEventListener('DOMContentLoaded', () => {
+        const btnEntrar = document.getElementById('btnEntrar');
+        const message = document.getElementById('message');
 
-        const email = document.querySelector('input[name="email"]').value;
-        const senha = document.querySelector('input[name="senha"]').value;
+        btnEntrar.addEventListener('click', async (event) => {
+          event.preventDefault();
 
-        try {
-          const response = await fetch('/cliente/login', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email, senha })
-          });
+          const email = document.getElementById('email').value;
+          const senha = document.getElementById('senha').value;
 
-          const data = await response.json();
+          try {
+            const response = await fetch('/cliente/login', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ email, senha })
+            });
 
-          if (!response.ok) {
-            alert(data.erro || 'Erro ao fazer login');
-            return;
+            const data = await response.json();
+
+            if (!response.ok) {
+              alert(data.erro || 'Erro ao fazer login');
+              return;
+            }
+
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('email', email);
+            localStorage.setItem('id', data.id);
+
+            alert('Login realizado com sucesso!');
+            window.location.href = '/dashboard'; 
+
+          } catch (err) {
+            console.error(err);
+            alert('Erro de conexão com o servidor');
           }
-
-          // Salva o token localmente
-          localStorage.setItem('token', data.token);
-
-          alert('Login realizado com sucesso!');
-          window.location.href = '/dashboard'; // redireciona após login
-
-        } catch (err) {
-          console.error(err);
-          alert('Erro de conexão com o servidor');
-        }
-      }
+        });
+      });

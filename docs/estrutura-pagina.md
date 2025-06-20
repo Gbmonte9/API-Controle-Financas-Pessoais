@@ -50,4 +50,4 @@
 
 ## 9. Perfil do Cliente
 - **URL:** `/perfil`
-- **Dados:** nome, email, botão de editar
+- **Dados:** nome, email, senha, botão de editar

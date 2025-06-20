@@ -1,61 +1,69 @@
 doctype html
 html
   head
-    title Cadastro de Cliente
+    title title
   body
-    h1 Cadastro de Cliente
+    h1 title
 
-    form(onsubmit="registrar(event)")
+    form()
       div
         label(for="nome") Nome:
-        input(type="text", name="nome", required)
+        input(type="text", name="nome", id="nome", required)
       div
         label(for="email") Email:
-        input(type="email", name="email", required)
+        input(type="email", name="email", id="email", required)
       div
         label(for="senha") Senha:
-        input(type="password", name="senha", required)
+        input(type="password", name="senha", id="senha", required)
       div
         label(for="senha1") Confirmar Senha:
-        input(type="password", name="senha1", required)
+        input(type="password", name="senha1", id="senha1", required)
+      div 
+        p(id="message")
       div
-        button(type="submit") Registrar
+        button(type="button", id="btnCadastrar") Cadastrar
+      div 
+        a(href="/login") Login 
 
     script.
-      async function registrar(event) {
-        event.preventDefault();
+      document.addEventListener('DOMContentLoaded', () => {
+        const btnCadastrar = document.getElementById('btnCadastrar');
+        const message = document.getElementById('message');
 
-        const nome = document.querySelector('input[name="nome"]').value;
-        const email = document.querySelector('input[name="email"]').value;
-        const senha = document.querySelector('input[name="senha"]').value;
-        const senha1 = document.querySelector('input[name="senha1"]').value;
+        btnCadastrar.addEventListener('click', async () => {
+          const nome = document.getElementById('nome').value;
+          const email = document.getElementById('email').value;
+          const senha = document.getElementById('senha').value;
+          const senha1 = document.getElementById('senha1').value;
 
-        if (senha !== senha1) {
-          alert('As senhas não conferem');
-          return;
-        }
-
-        try {
-          const response = await fetch('/cliente/registrar', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ nome, email, senha, senha1 })
-          });
-
-          const data = await response.json();
-
-          if (!response.ok) {
-            alert(data.erro || 'Erro no cadastro');
+          if (senha !== senha1) {
+            message.textContent = 'As senhas não conferem';
             return;
+          } else {
+            message.textContent = '';
           }
 
-          alert('Cadastro realizado com sucesso!');
-          window.location.href = '/cliente/login'; // redireciona após cadastro
+          try {
+            const response = await fetch('/cliente/registrar', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ nome, email, senha })
+            });
 
-        } catch (err) {
-          console.error(err);
-          alert('Erro de conexão com o servidor');
-        }
-      }
+            const data = await response.json();
+
+            if (!response.ok) {
+              alert(data.erro || 'Erro no cadastro');
+              return;
+            }
+
+            alert('Cadastro realizado com sucesso!');
+  
+          } catch (err) {
+            console.error(err);
+            alert('Erro de conexão com o servidor');
+          }
+        });
+      });

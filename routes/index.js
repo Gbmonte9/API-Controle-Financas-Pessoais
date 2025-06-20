@@ -7,7 +7,7 @@ router.get('/', async function(req, res, next) {
 
   try {
     
-    await db.inicializacao();  // inicializa banco e tabelas
+    await db.inicializacao();  
 
     res.render('index', { title: 'Login', mensagem: 'Banco de dados inicializado com sucesso!'});
   } catch (err) {

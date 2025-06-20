@@ -1,0 +1,118 @@
+html
+  head
+    title= title
+  body
+    h1 Editar Transação
+
+    nav
+      ul
+        li: a(href="/perfil") Perfil
+        li: a(href="/transacoes") Transações
+        li: a(href="/transacoes/nova") Fazer Transações
+        li: a(href="/relatorios") Relatórios
+        li: a(href="/") Sair
+
+    form
+      div
+        label(for="tipo") Tipo:
+        select(name="tipo" id="tipo" required)
+          option(value="receita") Receita
+          option(value="despesa") Despesa
+
+      div
+        label(for="descricao") Descrição:
+        input(type="text" name="descricao" id="descricao" required)
+
+      div
+        label(for="valor") Valor:
+        input(type="number" step="0.01" name="valor" id="valor" required)
+
+      div
+        label(for="categoria") Categoria:
+        input(type="text" name="categoria" id="categoria" required)
+
+      div
+        button(type="button" id="btnAtualizarTransacao") Atualizar Transação
+
+    div#message
+
+    // 👇 Passando a variável transacao_id para o script JS
+    script.
+      const transacaoId = !{JSON.stringify(transacao_id)};
+    script.
+      (function () {
+        document.addEventListener('DOMContentLoaded', function () {
+          async function initTransacao() {
+            const btnAtualizar = document.getElementById('btnAtualizarTransacao');
+            const message = document.getElementById('message');
+
+            const token = localStorage.getItem('token');
+            const emailToken = localStorage.getItem('email');
+
+            if (!token || !emailToken) {
+              alert('Você precisa estar logado.');
+              window.location.href = '/';
+              return;
+            }
+
+            try {
+              const response = await fetch(`/transacao/dados/transacao_id/${transacaoId}`, {
+                method: 'GET',
+                headers: {
+                  'Authorization': `Bearer ${token}`
+                }
+              });
+
+              const data = await response.json();
+
+              if (!response.ok) {
+                alert(data.erro || 'Erro ao buscar transação');
+                return;
+              }
+
+              document.getElementById('tipo').value = data.tipo;
+              document.getElementById('descricao').value = data.descricao;
+              document.getElementById('valor').value = data.valor;
+              document.getElementById('categoria').value = data.categoria;
+
+            } catch (err) {
+              console.error(err);
+              alert('Erro de conexão com o servidor');
+            }
+
+            btnAtualizar.addEventListener('click', async () => {
+              const tipo = document.getElementById('tipo').value;
+              const descricao = document.getElementById('descricao').value;
+              const valor = parseFloat(document.getElementById('valor').value);
+              const categoria = document.getElementById('categoria').value;
+
+              try {
+                const response = await fetch(`/transacao/${transacaoId}`, {
+                  method: 'PUT',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                  },
+                  body: JSON.stringify({ tipo, descricao, valor, categoria })
+                });
+
+                const resp = await response.json();
+
+                if (!response.ok) {
+                  alert(resp.erro || 'Erro ao atualizar transação');
+                  return;
+                }
+
+                alert('Transação atualizada com sucesso!');
+                window.location.href = '/transacoes';
+
+              } catch (err) {
+                console.error(err);
+                alert('Erro ao conectar com o servidor');
+              }
+            });
+          }
+
+          initTransacao();
+        });
+      })();

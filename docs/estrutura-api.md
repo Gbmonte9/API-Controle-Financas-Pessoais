@@ -4,11 +4,12 @@
 ## 🔹 Rotas de Cliente
 
 | Método | Rota                              | Descrição                                                           | Protegida |
-|--------|-----------------------------------|----------------------------------------------------------------------|-----------|
+|--------|-----------------------------------|---------------------------------------------------------------------|-----------|
 | GET    | `/cliente/dados`                  | 🔒 Listar **somente os dados do cliente logado**                    | ✅        |
 | GET    | `/cliente/dados/email/:email`     | 🔒 Buscar cliente pelo email (útil apenas se for admin/autenticado) | ✅        |
 | POST   | `/cliente/registrar`              | Registrar novo cliente                                              | ❌        |
 | POST   | `/cliente/login`                  | Login e geração do token JWT                                        | ❌        |
+| PUT    | `/cliente/perfil`                 | 🔒 Alterar os dados **somente os dados do cliente logado**          | ✅  |
 
 ---
 
@@ -19,8 +20,8 @@
 | GET    | `/transacao/dados/cliente_id/:ClientId`       | 🔒 Listar todas as transações do cliente          | ✅        |
 | GET    | `/transacao/dados/:id`                        | 🔒 Buscar detalhes de uma transação               | ✅        |
 | POST   | `/transacao`                                  | 🔒 Criar nova transação                           | ✅        |
-| PUT    | `/transacao/editar/cliente_id/:ClientId`  -   | 🔒 Atualizar transação                            | ✅        |
-| DELETE | `/transacao/excluir/cliente_id/:ClientId` -   | 🔒 Deletar transação                              | ✅        |
+| PUT    | `/transacao/`                                 | 🔒 Atualizar transação                            | ✅        |
+| DELETE | `/transacao/:Id`                              | 🔒 Deletar transação                              | ✅        |
 
 > 💡 **Recomendação**: use `req.cliente.id` a partir do token JWT, em vez de passar `ClientId` na URL.
 

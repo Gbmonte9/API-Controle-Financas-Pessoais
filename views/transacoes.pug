@@ -1,0 +1,159 @@
+html
+  head
+    title Minhas Transações
+  body
+    h1 Minhas Transações
+
+    nav
+      ul
+        li
+          a(href="/perfil") Perfil
+        li
+          a(href="/transacoes") Transações
+        li
+          a(href="/transacoes/nova") Fazer Transações
+        li
+          a(href="/relatorios") Relatórios
+        li
+          a(href="/") Sair
+
+    // Filtros simples
+    form(action="/transacoes" method="GET")
+      div
+        label(for="categoria") Filtrar por Categoria:
+        input(type="text" name="categoria" id="categoria")
+
+      div
+        label(for="data") Filtrar por Data:
+        input(type="date" name="data" id="data")
+
+      div
+        label(for="valor") Filtrar por Valor:
+        input(type="number" step="0.01" name="valor" id="valor")
+
+      div
+        button(type="submit") Filtrar
+
+    hr
+
+    h2 Lista de Transações
+
+    table(border="1")
+      thead
+        tr
+          th Tipo
+          th Descrição
+          th Valor
+          th Categoria
+          th Data
+          th Ações
+      tbody(id="tabela-transacoes")
+        // As transações serão preenchidas via JavaScript
+
+script.
+  document.addEventListener('DOMContentLoaded', async function () {
+    const token = localStorage.getItem('token');
+    const email = localStorage.getItem('email');
+
+    if (!token || !email) {
+      alert('Você precisa estar logado.');
+      window.location.href = '/';
+      return;
+    }
+
+    try {
+      const responseCliente = await fetch(`/cliente/dados/email/${email}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!responseCliente.ok) {
+        const data = await responseCliente.json();
+        alert(data.erro || 'Erro ao buscar dados do cliente');
+        return;
+      }
+
+      const dataCliente = await responseCliente.json();
+
+      const cliente = Array.isArray(dataCliente) ? dataCliente[0] : dataCliente;
+
+      console.log('Cliente logado:', cliente);
+
+      const responseTransacoes = await fetch(`/transacao/dados/cliente_id/${cliente.id}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!responseTransacoes.ok) {
+        const data = await responseTransacoes.json();
+        alert(data.erro || 'Erro ao buscar transações');
+        return;
+      }
+
+      const transacoes = await responseTransacoes.json();
+
+      const tbody = document.querySelector('#tabela-transacoes');
+      tbody.innerHTML = ''; 
+
+      if (!Array.isArray(transacoes) || transacoes.length === 0) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td colspan="6">Nenhuma transação encontrada.</td>';
+        tbody.appendChild(tr);
+        return;
+      }
+
+      transacoes.forEach(tx => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${tx.tipo}</td>
+          <td>${tx.descricao}</td>
+          <td>R$ ${Number(tx.valor).toFixed(2)}</td>
+          <td>${tx.categoria}</td>
+          <td>${new Date(tx.criado_em).toLocaleDateString()}</td>
+          <td>
+            <a href="/transacoes/editar/${tx.id}">Editar</a> |
+            <button onclick="deletarTransacao('${tx.id}')">Excluir</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+    } catch (err) {
+      console.error('Erro ao buscar dados:', err);
+      alert('Erro de conexão com o servidor');
+    }
+  });
+script.
+  async function deletarTransacao(id) {
+    if (!confirm('Deseja realmente excluir esta transação?')) return;
+
+    const token = localStorage.getItem('token');
+
+    try {
+      const response = await fetch(`/transacao/deletar/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.erro || 'Erro ao deletar transação');
+        return;
+      }
+
+      alert('Transação deletada com sucesso!');
+      window.location.reload(); 
+
+    } catch (err) {
+      console.error(err);
+      alert('Erro ao conectar com o servidor');
+    }
+  }

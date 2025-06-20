@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 const autenticarToken = require('../middlewares/jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 const { hashSenha, compararSenha } = require('../middlewares/bcrypt');
 require('dotenv').config();
@@ -13,7 +14,7 @@ router.get('/dados', autenticarToken, async function(req, res) {
     const vquery = "SELECT id, nome, email, senha, ativo, criado_em FROM cliente";
     const vcliente = await db.pool.query(vquery);
 
-    res.json(vcliente.rows);  // ✅ retorna apenas os dados
+    res.json(vcliente.rows);  
   } catch (err) {
     console.error('Erro ao buscar clientes:', err);
     res.status(500).json({ erro: 'Erro ao buscar dados' });
@@ -30,11 +31,11 @@ router.get('/dados/email/:Email', autenticarToken, async (req, res) => {
       WHERE LOWER(email) LIKE $1
     `;
 
-    const values = [`%${email}%`]; // único parâmetro com wildcard para LIKE
+    const values = [`%${email}%`]; 
 
     const result = await db.pool.query(query, values);
 
-    res.json(result.rows); // retorna os dados encontrados
+    res.json(result.rows); 
   } catch (err) {
     console.error('Erro ao buscar clientes:', err);
     res.status(500).json({ erro: 'Erro ao buscar dados' });
@@ -53,14 +54,14 @@ router.post('/registrar', async function(req, res, next) {
   }
 
   try {
-    // Criptografa a senha (hash)
+  
     const senhaHash = await hashSenha(senha);
 
     const cliente = {
       id: uuidv4(),
       nome,
       email,
-      senha: senhaHash,  // salva a senha criptografada
+      senha: senhaHash,  
       ativo: true,
       criado_em: new Date(),
     };
@@ -94,7 +95,7 @@ router.post('/login', async function (req, res) {
   const { email, senha } = req.body;
 
   try {
-    // Busca o cliente pelo email
+   
     const query = `SELECT * FROM cliente WHERE email = $1`;
     const result = await db.pool.query(query, [email]);
 
@@ -104,7 +105,6 @@ router.post('/login', async function (req, res) {
 
     const cliente = result.rows[0];
 
-    // Compara a senha enviada com o hash salvo
     const senhaValida = await compararSenha(senha, cliente.senha);
     if (!senhaValida) {
       return res.status(401).json({ erro: 'Senha incorreta' });
@@ -112,9 +112,9 @@ router.post('/login', async function (req, res) {
 
     // Gera o token JWT
     const token = jwt.sign(
-      { id: cliente.id, email: cliente.email }, // payload
-      process.env.JWT_SECRET,                   // chave secreta
-      { expiresIn: '1h' }                       // duração do token
+      { id: cliente.id, email: cliente.email },
+      process.env.JWT_SECRET,                   
+      { expiresIn: '1h' }                      
     );
 
     res.json({ token });
@@ -126,5 +126,55 @@ router.post('/login', async function (req, res) {
 });
 
 // ====================
+
+// PUT
+
+router.put('/perfil', autenticarToken, async function (req, res) {
+  const { nome, email, senha } = req.body;
+
+  try {
+    const clienteId = req.usuario.id;
+
+    const query = `SELECT * FROM cliente WHERE id = $1`;
+    const result = await db.pool.query(query, [clienteId]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ erro: 'Usuário não encontrado' });
+    }
+
+    const cliente = result.rows[0];
+
+    let senhaHasheada = cliente.senha;
+    if (senha && senha.trim() !== '') {
+      senhaHasheada = await hashSenha(senha); 
+    }
+
+    const updateQuery = `
+      UPDATE cliente 
+      SET nome = $1, email = $2, senha = $3
+      WHERE id = $4
+      RETURNING id, nome, email, ativo, criado_em
+    `;
+
+    const updateResult = await db.pool.query(updateQuery, [
+      nome,
+      email,
+      senhaHasheada,
+      clienteId
+    ]);
+
+    res.json({
+      mensagem: 'Perfil atualizado com sucesso',
+      cliente: updateResult.rows[0]
+    });
+
+  } catch (err) {
+    console.error('Erro ao atualizar perfil:', err);
+    res.status(500).json({ erro: 'Erro interno ao atualizar perfil' });
+  }
+
+});
+
+// ==================
 
 module.exports = router;
