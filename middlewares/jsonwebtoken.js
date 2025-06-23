@@ -1,9 +1,9 @@
 const jwt = require('jsonwebtoken');
-require('dotenv').config(); // para usar process.env.JWT_SECRET
+require('dotenv').config(); 
 
 function autenticarToken(req, res, next) {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+  const token = authHeader && authHeader.split(' ')[1]; 
 
   if (!token) {
     return res.status(401).json({ erro: 'Token não fornecido' });

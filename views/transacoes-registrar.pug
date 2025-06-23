@@ -1,74 +1,40 @@
-html
-  head
-    title Nova Transação
-  body
-    h1 Nova Transação
+extends layout
 
-    nav
-      ul
-        li: a(href="/perfil") Perfil
-        li: a(href="/transacoes") Transações
-        li: a(href="/transacoes/nova") Fazer Transações
-        li: a(href="/relatorios") Relatórios
-        li: a(href="/") Sair
+block content
+
+  include includes/navbar
+
+  .card.rounded-5.p-5.text-center.border.border-white.shadow-white
+
+    h2.mb-4.text-center Nova Transação
 
     form
-      div
-        label(for="tipo") Tipo:
-        select(name="tipo" id="tipo" required)
+      .mb-3.text-start
+
+        label.form-label(for="tipo") Tipo:
+        select.form-select(name="tipo" id="tipo" required)
+          option(value="" disabled selected) Selecione o tipo
           option(value="receita") Receita
           option(value="despesa") Despesa
 
-      div
-        label(for="descricao") Descrição:
-        input(type="text" id="descricao")
+      .mb-3.text-start
+        label.form-label(for="descricao") Descrição:
+        input.form-control(type="text" id="descricao" name="descricao" placeholder="Ex: Salário, Aluguel")
 
-      div
-        label(for="valor") Valor:
-        input(type="number" step="0.01" id="valor")
+      .mb-3.text-start
+        label.form-label(for="valor") Valor:
+        input.form-control(type="number" step="0.01" id="valor" name="valor" placeholder="Ex: 200.00")
 
-      div
-        label(for="categoria") Categoria:
-        input(type="text" id="categoria")
+      .mb-3.text-start
+        label.form-label(for="categoria") Categoria:
+        select.form-select(name="categoria" id="categoria" required)
+          option(value="" disabled selected) Selecione a categoria
 
-      div
-        button(type="button" id="btnCadastrarTransacao") Salvar
+      p#message.text-success.text-center
 
-    p#message
+      .text-center.mt-4
+        button.btn.btn-light.btn-lg.w-100(type="button" id="btnCadastrarTransacao") Salvar
 
-    script.
-      document.addEventListener('DOMContentLoaded', function () {
-        const btnCadastrar = document.getElementById('btnCadastrarTransacao');
-        const message = document.getElementById('message');
-
-        btnCadastrar.addEventListener('click', async function () {
-          const tipo = document.getElementById('tipo').value;
-          const descricao = document.getElementById('descricao').value;
-          const valor = document.getElementById('valor').value;
-          const categoria = document.getElementById('categoria').value;
-          const token = localStorage.getItem('token');
-
-          try {
-            const response = await fetch('/transacao', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-              },
-              body: JSON.stringify({ tipo, descricao, valor, categoria })
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-              alert(data.erro || 'Erro no cadastro');
-              return;
-            }
-
-            alert('Cadastro realizado com sucesso!');
-          } catch (err) {
-            console.error(err);
-            alert('Erro de conexão com o servidor');
-          }
-        });
-      });
+block scripts
+  script(src="/javascripts/components/clienteInfo.js")
+  script(src="/javascripts/transacoes/transacoes-registrar.js")

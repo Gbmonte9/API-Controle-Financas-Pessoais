@@ -1,33 +1,32 @@
-
 # 🌐 Estrutura de Páginas Web (Frontend)
 
 ## 1. Página Inicial (Landing Page)
 - **URL:** `/`
-- **Função:** Explicação rápida do app, botão de entrar ou registrar.
-- **Visível:** Pública (sem login)
+- **Função:** Apresenta rapidamente o aplicativo, com botões para login ou registro.
+- **Acesso:** Público (sem autenticação)
 
 ## 2. Página de Registro
 - **URL:** `/registrar`
-- **Formulário com:** nome, e-mail, senha
-- **Envia POST para:** `/clientes/registrar`
+- **Formulário com campos:** Nome, E-mail, Senha, Confirmação de senha, Upload de foto (opcional)
+- **Envia dados via:** `POST /clientes/registrar`
 
 ## 3. Página de Login
 - **URL:** `/login`
-- **Formulário com:** e-mail e senha
-- **Envia POST para:** `/clientes/login`
-- **Armazena o token JWT:** localStorage ou cookie
+- **Formulário com campos:** E-mail e Senha
+- **Requisição:** `POST /clientes/login`
+- **Armazena:** Token JWT no `localStorage`
 
-## 4. Dashboard
+## 4. Dashboard (Resumo)
 - **URL:** `/dashboard`
-- **Mostra:** saldo atual, total de receitas, total de despesas
-- **Busca dados via:** `/relatorios/saldo`
-- **Protegida com token JWT**
+- **Exibe:** Saldo atual, total de receitas, total de despesas
+- **Dados via:** `GET /relatorios/saldo`
+- **Acesso protegido:** Requer token JWT
 
-## 5. Minhas Transações
+## 5. Página de Transações
 - **URL:** `/transacoes`
-- **Mostra lista de receitas/despesas**
-- **Permite filtrar por:** categoria, data, valor
-- **CRUD usando:**
+- **Função:** Listar transações do usuário (receitas e despesas)
+- **Filtros disponíveis:** Tipo, Categoria, Valor, Data
+- **Operações suportadas:**
   - `GET /transacoes`
   - `POST /transacoes`
   - `PUT /transacoes/:id`
@@ -35,19 +34,27 @@
 
 ## 6. Nova Transação
 - **URL:** `/transacoes/nova`
-- **Formulário para inserir receita ou despesa**
+- **Descrição:** Formulário para adicionar nova receita ou despesa
+- **Envio via:** `POST /transacoes`
 
 ## 7. Editar Transação
 - **URL:** `/transacoes/editar/:id`
-- **Carrega dados existentes para edição**
+- **Descrição:** Carrega dados da transação e permite atualização
+- **Envio via:** `PUT /transacoes/:id`
 
 ## 8. Relatórios Detalhados
 - **URL:** `/relatorios`
-- **Permite o usuário:**
-  - Selecionar mês ou período
-  - Ver gráfico por categoria
-  - Ver tabela resumida
+- **Funcionalidades:**
+  - Visualização de saldo total, receitas e despesas
+  - Tabela com totais por categoria:
+    - Total de receitas por categoria
+    - Total de despesas por categoria
+  - Gráfico (pizza ou barras) com distribuição das despesas
+  - Download dos dados em PDF
 
 ## 9. Perfil do Cliente
 - **URL:** `/perfil`
-- **Dados:** nome, email, senha, botão de editar
+- **Exibe:** Nome, E-mail, Foto, Data de registro
+- **Ações disponíveis:**
+  - Editar dados (nome, senha, foto)
+  - Desativar a conta

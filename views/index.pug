@@ -1,15 +1,20 @@
-doctype html
-html
-  head
-    title API de Controle de Finanças Pessoais
-  body
-    h1 Bem-vindo à API de Finanças Pessoais
+extends layout
 
-    p Esta aplicação permite que você registre, consulte e analise suas transações financeiras.
-    p Você pode cadastrar uma conta, realizar login, adicionar transações (entrada/saída), gerar relatórios por categoria e por período, além de consultar seu saldo atual.
+block content 
 
-    p Para começar, escolha uma opção abaixo:
+    .card.rounded-4.p-5.text-center.border.border-white.shadow-white
 
-    a(href="/login") Login
-    br
-    a(href="/registrar") Cadastrar
+      h1.display-5.fw-bold.mb-4 #{title}  
+
+      p.lead.mb-3 Esta aplicação permite que você registre, consulte e analise suas transações financeiras.
+      p.mb-3 Você pode cadastrar uma conta, realizar login, adicionar transações (entrada/saída), gerar relatórios por categoria e por período, além de consultar seu saldo atual.
+      p.mb-4 Para começar, escolha uma opção abaixo:
+
+      if mensagem
+        p.mb-4.fw-semibold(class=acesso ? "text-success" : "text-danger") #{mensagem}
+
+      hr.my-4
+
+      .d-grid.gap-2.d-md-flex.justify-content-md-center
+        a.btn.btn-outline-light.flex-fill(href="/login") Login      
+        a.btn.btn-outline-light.flex-fill(href="/registrar") Cadastrar

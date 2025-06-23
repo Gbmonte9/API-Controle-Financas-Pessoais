@@ -71,7 +71,8 @@ async function criarTabelaBD() {
           email VARCHAR(100) UNIQUE NOT NULL,
           senha VARCHAR(100) NOT NULL,
           ativo BOOLEAN NOT NULL DEFAULT true,
-          criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+          criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          foto VARCHAR(100) NOT NULL
         );
       `);
       console.log('Tabela Cliente criada com sucesso.');

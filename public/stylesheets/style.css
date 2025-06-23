@@ -1,8 +1,86 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+html {
+  box-sizing: border-box;
+  height: 100%;
+}
+*, *::before, *::after {
+  box-sizing: inherit;
 }
 
-a {
-  color: #00B7FF;
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 1rem;
+}
+
+.card {
+  background-color: #2c2c2c;
+  color: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.3);
+  width: 100%;
+  margin: 2rem 0 3rem;
+  box-shadow: 0 0 0 3px white; 
+}
+
+@media (max-width: 600px) {
+  .card {
+    padding: 1.5rem 1rem;
+    margin: 4rem 1rem 3rem; 
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+.thead-white {
+  background-color: white;
+  color: black;
+}
+
+
+.shadow-white {
+  box-shadow: 0 0 4px 1px rgba(255, 255, 255, 0.8);
+}
+
+footer {
+  background-color: #222;
+  color: white;
+  text-align: center;
+  padding: 1rem 0;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
+  margin-top: auto;
+  width: 100%;
+  z-index: 10;
+}
+
+footer > .container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  background-color: transparent;
+}
+
+footer a {
+  color: #fff;
+  text-decoration: underline;
+}
+footer a:hover {
+  color: #ddd;
+}
+footer a:focus {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
 }

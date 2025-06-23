@@ -1,63 +1,26 @@
-html
-  head
-    title Dashboard
-  body
-    h1 Bem-vindo à Dashboard
+extends layout
 
-    p(id="dados-cliente") Carregando dados...
+block content
 
-    section#resumo-financeiro
-      h2 Resumo Financeiro
-      ul
-        li Saldo Atual: R$ 2.500,00
-        li Total de Receitas: R$ 5.000,00
-        li Total de Despesas: R$ 2.500,00
+    include includes/navbar
 
-    nav
-      ul
-        li: a(href="/perfil") Perfil
-        li: a(href="/transacoes") Transações
-        li: a(href="/transacoes/nova") Fazer Transações
-        li: a(href="/relatorios") Relatorios
-        li: a(href="/") Sair
+    .card.rounded-5.p-5.text-center.border.border-white.shadow-white
 
-    script.
-        document.addEventListener('DOMContentLoaded', async () => {
-            const token = localStorage.getItem('token');
-            const email = localStorage.getItem('email');
-            console.log("Token: ", token);
-            console.log("Email: ", email);
+      p#dados-cliente.text-light.fs-5.mb-4.text-center
+        | Aqui você pode acompanhar suas finanças pessoais de forma simples e eficiente.
 
-            if (!token) {
-                alert('Você precisa estar logado.');
-                window.location.href = '/';
-                return;
-            }
+      section#resumo-financeiro.mb-5
+        h2.text-light.mb-3 Resumo Financeiro
+        ul.list-group.shadow-sm
+          li#dados-saldo.list-group-item.bg-dark.text-white.d-flex.justify-content-between.align-items-center
+            strong Saldo Atual:
+            span#saldo-valor.text-light.ms-2 R$ 0,00
+          li#dados-receita-mes.list-group-item.bg-dark.text-white.d-flex.justify-content-between.align-items-center
+            strong Receitas do mês:
+            span#receita-valor.text-light.ms-2 R$ 0,00
+          li#dados-despesa-mes.list-group-item.bg-dark.text-white.d-flex.justify-content-between.align-items-center
+            strong Despesas do mês:
+            span#despesa-valor.text-light.ms-2 R$ 0,00
 
-            try {
-                const response = await fetch(`cliente/dados/email/${email}`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                alert(data.erro || 'Erro ao buscar dados');
-                return;
-                }
-
-                console.log('Cliente logado:', data);
-
-                const cliente = Array.isArray(data) ? data[0] : data;
-
-                const pDadosCliente = document.getElementById('dados-cliente');
-                pDadosCliente.textContent = `Bem-vindo, ${cliente.nome}`;
-
-            } catch (err) {
-                console.error(err);
-                alert('Erro de conexão com o servidor');
-            }
-        });
+block scripts
+  script(src="/javascripts/components/clienteInfo.js")

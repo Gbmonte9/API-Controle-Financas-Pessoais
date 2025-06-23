@@ -1,118 +1,44 @@
-html
-  head
-    title Perfil do Cliente
-  body
-    h1 Perfil do Cliente
+extends layout
 
-    nav
-      ul
-        li: a(href="/perfil") Perfil
-        li: a(href="/transacoes") Transações
-        li: a(href="/transacoes/nova") Fazer Transações
-        li: a(href="/relatorios") Relatórios
-        li: a(href="/") Sair
+block content
 
-    form
-      div
-        label(for="nome") Nome:
-        input(type="text" id="nome" name="nome" required)
+  include includes/navbar
 
-      div
-        label(for="email") Email:
-        input(type="email" id="email" name="email" required)
+  .card.rounded-4.p-5.text-center.border.border-white.shadow-white
+    h1.text-white.mb-4.text-center #{title}
 
-      div
-        label(for="senha") Senha:
-        input(type="password" id="senha" name="senha")
+    form(action="/cliente/registrar" method="PUT" enctype="multipart/form-data")
+      .mb-3.text-start
+        label.form-label(for="nome") Nome:
+        input.form-control(type="text" id="nome" name="nome" required value=nome)
 
-      div
-        label(for="senha1") Confirmar Senha:
-        input(type="password" id="senha1" name="senha1")
+      .mb-3.text-start
+        label.form-label(for="email") Email:
+        input.form-control(type="email" id="email" name="email" required value=email)
 
-      div
-        button(type="button" id="btmEditarCliente") Editar
+      .mb-3.text-start
+        label.form-label(for="senha") Senha:
+        input.form-control(type="password" id="senha" name="senha" placeholder="Deixe vazio para não alterar")
 
-      p#message(style="color: red;")
+      .mb-3.text-start
+        label.form-label(for="senha1") Confirmar Senha:
+        input.form-control(type="password" id="senha1" name="senha1" placeholder="Confirme a nova senha")
 
-    script.
-      (function () {
-        document.addEventListener('DOMContentLoaded', function () {
-          async function initPerfil() {
-            const btnCadastrar = document.getElementById('btmEditarCliente');
-            const message = document.getElementById('message');
+      .mb-3.text-start
+        label.form-label(for="foto") Foto:
+        input.form-control(type="file" name="foto" id="foto")
+        small.form-text.text-light Não é obrigatório colocar foto, mas se desejar.
 
-            const token = localStorage.getItem('token');
-            const emailToken = localStorage.getItem('email');
+      p#message
 
-            if (!token || !emailToken) {
-              alert('Você precisa estar logado.');
-              window.location.href = '/';
-              return;
-            }
+      .d-flex.justify-content-center.gap-3.mt-4
+        button.btn.btn-light(type="submit" id="btnEditarCliente") Editar
 
-            try {
-              const response = await fetch(`/cliente/dados/email/${emailToken}`, {
-                method: 'GET',
-                headers: {
-                  'Authorization': `Bearer ${token}`
-                }
-              });
+        button.btn.btn-secondary(type="buttom" id="btnDesativarConta") Desativar Conta
 
-              const data = await response.json();
+block scripts
+  script(src="/javascripts/perfil/perfil.js")
+  script(src="/javascripts/perfil/desativarPerfil.js")
+  script(src="/javascripts/components/clienteInfo.js")
 
-              if (!response.ok) {
-                alert(data.erro || 'Erro ao buscar dados');
-                return;
-              }
-
-              const cliente = Array.isArray(data) ? data[0] : data;
-
-              document.getElementById('nome').value = cliente.nome;
-              document.getElementById('email').value = cliente.email;
-            } catch (err) {
-              console.error(err);
-              alert('Erro de conexão com o servidor');
-            }
-
-            btnCadastrar.addEventListener('click', async () => {
-              const nome = document.getElementById('nome').value;
-              const email = document.getElementById('email').value;
-              const senha = document.getElementById('senha').value;
-              const senha1 = document.getElementById('senha1').value;
-
-              if (senha !== senha1) {
-                message.textContent = 'As senhas não conferem';
-                return;
-              } else {
-                message.textContent = '';
-              }
-
-              try {
-                const response = await fetch('/cliente/perfil', {
-                  method: 'PUT',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                  },
-                  body: JSON.stringify({ nome, email, senha })
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                  alert(data.erro || 'Erro ao atualizar perfil');
-                  return;
-                }
-
-                alert('Perfil atualizado com sucesso!');
-                localStorage.setItem('email', email); 
-              } catch (err) {
-                console.error(err);
-                alert('Erro de conexão com o servidor');
-              }
-            });
-          }
-
-          initPerfil(); 
-        });
-      })();
+      

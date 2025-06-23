@@ -43,9 +43,9 @@ router.get('/dados/cliente_id/:ClientId', autenticarToken, async (req, res) => {
   }
 });
 
-router.get('/dados/transacao_id/:TransacaoId', autenticarToken, async (req, res) => {
+router.get('/dados/transacao_id/:idTransacao', autenticarToken, async (req, res) => {
   try {
-    const transacaoId = req.params.TransacaoId;
+    const transacaoId = req.params.idTransacao;
 
     const query = `
       SELECT id, cliente_id, tipo, descricao, valor, categoria, criado_em
@@ -69,23 +69,68 @@ router.get('/dados/transacao_id/:TransacaoId', autenticarToken, async (req, res)
   }
 });
 
+router.get('/filtrar/cliente_id/:id', autenticarToken, async (req, res) => {
+  const { id } = req.params;
+  const { categoria, data, valor, tipo } = req.query;
+
+  let query = 'SELECT * FROM transacao WHERE cliente_id = $1';
+  const params = [id];
+  let paramIndex = 2;
+
+  const adicionarFiltro = (condicao, valorFiltro) => {
+    query += ` AND ${condicao}`;
+    params.push(valorFiltro);
+    paramIndex++;
+  };
+
+  if (categoria) {
+    adicionarFiltro(`categoria ILIKE $${paramIndex}`, `%${categoria}%`);
+  }
+
+  if (data) {
+    adicionarFiltro(`DATE(criado_em) = $${paramIndex}`, data);
+  }
+
+  if (valor) {
+    adicionarFiltro(`valor = $${paramIndex}`, parseFloat(valor));
+  }
+
+  if (tipo) {
+    adicionarFiltro(`tipo = $${paramIndex}`, tipo);
+  }
+
+  try {
+    const result = await db.pool.query(query, params);
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ erro: 'Erro ao buscar transações filtradas' });
+  }
+});
+
 // ===============================
 
 // Todos os POST
 
-router.post('/', autenticarToken, async function(req, res) {
+router.post('/', autenticarToken, async (req, res) => {
   const { tipo, descricao, valor, categoria } = req.body;
-  console.log(`ClienteId: ${req.usuario.id}`);
+  const clienteId = req.usuario?.id;
+
+  console.log(`ClienteId: ${clienteId}`);
+
+  if (!tipo || !descricao || !valor || !categoria) {
+    return res.status(400).json({ erro: 'Todos os campos são obrigatórios.' });
+  }
 
   try {
     const transacao = {
       id: uuidv4(),
-      cliente_id: req.usuario.id, 
+      cliente_id: clienteId,
       tipo,
       descricao,
       valor,
       categoria,
-      criado_em: new Date(),
+      criado_em: new Date()
     };
 
     const query = `
@@ -101,38 +146,46 @@ router.post('/', autenticarToken, async function(req, res) {
       transacao.descricao,
       transacao.valor,
       transacao.categoria,
-      transacao.criado_em,
+      transacao.criado_em
     ];
 
     const result = await db.pool.query(query, values);
 
-    res.json(result.rows[0]);
+    res.status(201).json({
+      transacao: result.rows[0],
+      mensagem: 'Transação cadastrada com sucesso!'
+    });
+
   } catch (err) {
     console.error('❌ Erro ao registrar transação:', err);
-    res.status(500).json({ erro: 'Erro ao registrar transação' });
+    res.status(500).json({ erro: 'Erro ao registrar transação. Tente novamente mais tarde.' });
   }
 });
+
 
 // ====================
 
 // PUT 
 
 router.put('/:id', autenticarToken, async function (req, res) {
-  const usuario_id = req.usuario.id; 
-  const transacao_id = req.params.id; 
+  const usuario_id = req.usuario.id;
+  const transacao_id = req.params.id;
   const { tipo, descricao, valor, categoria } = req.body;
 
-  try {
+  if (!tipo || !descricao || !valor || !categoria) {
+    return res.status(400).json({ erro: 'Todos os campos são obrigatórios.' });
+  }
 
+  try {
     const verificaQuery = 'SELECT cliente_id FROM transacao WHERE id = $1';
     const verificaResult = await db.pool.query(verificaQuery, [transacao_id]);
 
     if (verificaResult.rows.length === 0) {
-      return res.status(404).json({ erro: 'Transação não encontrada' });
+      return res.status(404).json({ erro: 'Transação não encontrada.' });
     }
 
     if (verificaResult.rows[0].cliente_id !== usuario_id) {
-      return res.status(403).json({ erro: 'Você não tem permissão para alterar essa transação' });
+      return res.status(403).json({ erro: 'Você não tem permissão para alterar esta transação.' });
     }
 
     const updateQuery = `
@@ -146,16 +199,19 @@ router.put('/:id', autenticarToken, async function (req, res) {
     `;
 
     const values = [tipo, descricao, valor, categoria, transacao_id];
-
     const updateResult = await db.pool.query(updateQuery, values);
 
-    res.json(updateResult.rows[0]);
+    res.json({
+      dados: updateResult.rows[0],
+      mensagem: 'Transação atualizada com sucesso!'
+    });
 
   } catch (err) {
     console.error('❌ Erro ao atualizar transação:', err);
-    res.status(500).json({ erro: 'Erro ao atualizar transação' });
+    res.status(500).json({ erro: 'Erro ao atualizar transação. Tente novamente mais tarde.' });
   }
 });
+
 
 // =====================
 

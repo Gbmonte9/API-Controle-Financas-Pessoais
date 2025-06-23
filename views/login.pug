@@ -1,61 +1,29 @@
-doctype html
-html
-  head
-    title Login
-  body
-    h1 Login
+extends layout
+
+block content
+
+  .card.shadow-lg.rounded-4.p-5.text-center.border.border-white
+    h1.display-5.fw-bold.mb-4 #{title}
 
     form
-      div
-        label(for="email") Email:
-        input(type="email", name="email", id="email", required)
-      div
-        label(for="senha") Senha:
-        input(type="password", name="senha", id="senha", required)
-      div
-        button(type="button", id="btnEntrar") Entrar
-      div 
-        a(href="/registrar") Cadastrar
-      div 
-        p(id="message")
+      .mb-3.text-start
+        label.form-label(for="email") Email:
+        input.form-control(type="email", name="email", id="email", required, placeholder="Digite seu email")
 
-    script.
-      document.addEventListener('DOMContentLoaded', () => {
-        const btnEntrar = document.getElementById('btnEntrar');
-        const message = document.getElementById('message');
+      .mb-3.text-start
+        label.form-label(for="senha") Senha:
+        input.form-control(type="password", name="senha", id="senha", required, placeholder="Digite sua senha")
 
-        btnEntrar.addEventListener('click', async (event) => {
-          event.preventDefault();
+      p#message.mt-3
 
-          const email = document.getElementById('email').value;
-          const senha = document.getElementById('senha').value;
+      .d-grid
+        button.btn.btn-light.btn-lg(type="button", id="btnEntrar") Entrar
 
-          try {
-            const response = await fetch('/cliente/login', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({ email, senha })
-            });
+    hr.my-4
 
-            const data = await response.json();
+    .d-grid.gap-2.d-md-flex.justify-content-md-center
+      a.btn.btn-outline-light.flex-fill(href="/") Descrição
+      a.btn.btn-outline-light.flex-fill(href="/registrar") Cadastrar
 
-            if (!response.ok) {
-              alert(data.erro || 'Erro ao fazer login');
-              return;
-            }
-
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('email', email);
-            localStorage.setItem('id', data.id);
-
-            alert('Login realizado com sucesso!');
-            window.location.href = '/dashboard'; 
-
-          } catch (err) {
-            console.error(err);
-            alert('Erro de conexão com o servidor');
-          }
-        });
-      });
+block scripts
+  script(src="/javascripts/login/login.js")

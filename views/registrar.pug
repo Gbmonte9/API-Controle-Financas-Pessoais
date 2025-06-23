@@ -1,69 +1,42 @@
-doctype html
-html
-  head
-    title title
-  body
-    h1 title
+extends layout
 
-    form()
-      div
-        label(for="nome") Nome:
-        input(type="text", name="nome", id="nome", required)
-      div
-        label(for="email") Email:
-        input(type="email", name="email", id="email", required)
-      div
-        label(for="senha") Senha:
-        input(type="password", name="senha", id="senha", required)
-      div
-        label(for="senha1") Confirmar Senha:
-        input(type="password", name="senha1", id="senha1", required)
-      div 
-        p(id="message")
-      div
-        button(type="button", id="btnCadastrar") Cadastrar
-      div 
-        a(href="/login") Login 
+block content 
 
-    script.
-      document.addEventListener('DOMContentLoaded', () => {
-        const btnCadastrar = document.getElementById('btnCadastrar');
-        const message = document.getElementById('message');
+  .card.rounded-4.p-5.text-center.border.border-white.shadow-white
 
-        btnCadastrar.addEventListener('click', async () => {
-          const nome = document.getElementById('nome').value;
-          const email = document.getElementById('email').value;
-          const senha = document.getElementById('senha').value;
-          const senha1 = document.getElementById('senha1').value;
+    h1.display-5.fw-bold.mb-4 #{title}
 
-          if (senha !== senha1) {
-            message.textContent = 'As senhas não conferem';
-            return;
-          } else {
-            message.textContent = '';
-          }
+    form(action="/cliente/registrar" method="POST" enctype="multipart/form-data")
+      .mb-3.text-start
+        label.form-label(for="nome") Nome:
+        input.form-control(type="text", name="nome", id="nome", required, placeholder="Digite seu nome")
 
-          try {
-            const response = await fetch('/cliente/registrar', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({ nome, email, senha })
-            });
+      .mb-3.text-start
+        label.form-label(for="email") Email:
+        input.form-control(type="email", name="email", id="email", required, placeholder="Digite seu email")
 
-            const data = await response.json();
+      .mb-3.text-start
+        label.form-label(for="senha") Senha:
+        input.form-control(type="password", name="senha", id="senha", required, placeholder="Digite sua senha")
 
-            if (!response.ok) {
-              alert(data.erro || 'Erro no cadastro');
-              return;
-            }
+      .mb-3.text-start
+        label.form-label(for="senha1") Confirmar Senha:
+        input.form-control(type="password", name="senha1", id="senha1", required, placeholder="Confirme sua senha")
 
-            alert('Cadastro realizado com sucesso!');
-  
-          } catch (err) {
-            console.error(err);
-            alert('Erro de conexão com o servidor');
-          }
-        });
-      });
+      .mb-3.text-start
+        label.form-label(for="foto") Foto:
+        input.form-control(type="file", name="foto", id="foto")
+        small.form-text.text-light Não é obrigatório colocar foto, mas se desejar.
+
+      p#message.mt-3
+
+      button.btn.btn-light.btn-lg.w-100(type="submit") Cadastrar
+
+    hr.my-4 
+
+    .d-grid.gap-2.d-md-flex.justify-content-md-center
+      a.btn.btn-outline-light.flex-fill(href="/login") Login
+      a.btn.btn-outline-light.flex-fill(href="/") Descrição
+
+block scripts
+  script(src="/javascripts/registrar/registrar.js")

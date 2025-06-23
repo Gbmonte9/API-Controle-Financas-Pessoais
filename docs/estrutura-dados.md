@@ -7,27 +7,28 @@
 
 ```sql
 CREATE TABLE cliente (
-  id VARCHAR(100) PRIMARY KEY,
-  nome VARCHAR(100) NOT NULL,
-  email VARCHAR(100) UNIQUE NOT NULL,
-  senha VARCHAR(100) NOT NULL,
-  ativo BOOLEAN NOT NULL DEFAULT true,
-  criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,      
-);
+          id VARCHAR(100) PRIMARY KEY,
+          nome VARCHAR(100) NOT NULL,
+          email VARCHAR(100) UNIQUE NOT NULL,
+          senha VARCHAR(100) NOT NULL,
+          ativo BOOLEAN NOT NULL DEFAULT true,
+          criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          foto VARCHAR(100) NOT NULL
+        );
 ```
 
 ### 💰 Tabela: transacoes
 
 ```sql
 CREATE TABLE transacao (
-  id VARCHAR(100) PRIMARY KEY,
-  cliente_id VARCHAR(100) REFERENCES cliente(id),
-  tipo VARCHAR(50) NOT NULL,
-  descricao VARCHAR(100) NOT NULL,
-  valor DECIMAL(10, 2) NOT NULL,
-  categoria VARCHAR(100) NOT NULL,
-  criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+          id VARCHAR(100) PRIMARY KEY,
+          cliente_id VARCHAR(100) REFERENCES cliente(id),
+          tipo VARCHAR(50) NOT NULL,
+          descricao VARCHAR(100) NOT NULL,
+          valor DECIMAL(10, 2) NOT NULL,
+          categoria VARCHAR(100) NOT NULL,
+          criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
 ```
 
 ## 🔐 Autenticação com JWT
@@ -35,7 +36,7 @@ CREATE TABLE transacao (
 ### Fluxo:
 
 1. **Registro (POST `/cliente/registrar`)**
-   - Envia: `nome`, `email`, `senha`
+   - Envia: `nome`, `email`, `senha`, `foto`
    - A senha é criptografada com bcrypt
 
 2. **Login (POST `/cliente/login`)**

@@ -1,7 +1,24 @@
 doctype html
-html
+html(lang="pt-br")
   head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    meta(charset="utf-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title= title || "Meu Projeto Financeiro"
+    link(
+      rel="stylesheet",
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css",
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH",
+      crossorigin="anonymous"
+    )
+    link(rel="stylesheet", href="/stylesheets/style.css")
   body
-    block content
+    main
+      block content
+
+    include includes/footer
+    script(
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js",
+      integrity="sha384-ENjdO4Dr2bkBIFxQpeoA6N0xHx91HgE3aC0Furx2nqUjQkPatxVn+J7Wv5yW48N3",
+      crossorigin="anonymous"
+    )
+    block scripts

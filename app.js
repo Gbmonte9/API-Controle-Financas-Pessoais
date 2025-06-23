@@ -41,7 +41,6 @@ app.use('/transacao', indexTransacao);
 app.use('/relatorio', indexRelatorio);
 app.use('/users', usersRouter);
 
-
 //web
 app.use('/dashboard', indexDashboard);
 app.use('/login', indexLogin);
