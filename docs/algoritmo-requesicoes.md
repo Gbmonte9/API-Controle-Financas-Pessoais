@@ -1,17 +1,26 @@
+# 📊 Algoritmo e Requisições – API de Controle de Finanças Pessoais
 
-# 📊 Algoritmo e Requisições
+## ✅ Etapa 1: Definição do Projeto
 
-## Etapa 1: Definição do Projeto
+- **📌 Nome do Projeto:** API de Controle de Finanças Pessoais  
+- **🛠 Tecnologias Utilizadas:**  
+  - **Backend:** Node.js com Express  
+  - **Banco de Dados:** PostgreSQL  
+  - **Autenticação:** JWT + bcrypt  
+  - **Outros:** PDFKit (relatórios), Multer (upload de imagens), Sharp (tratamento de imagem), Chart.js (gráficos)
 
-- **Nome do Projeto:** API de Controle de Finanças Pessoais  
-- **Tecnologias principais:** Node.js (Express), PostgreSQL  
-- **Objetivo:** Permitir o registro de receitas e despesas com tipo, categorias, datas e valores, além de calcular o saldo total do usuário.
+- **🎯 Objetivo:**  
+  Desenvolver uma API RESTful para que usuários possam:
+  - Cadastrar receitas e despesas
+  - Organizar transações por tipo e categoria
+  - Visualizar o saldo total e gerar relatórios
+  - Proteger dados com autenticação via JWT
 
 ---
 
-## Etapa 2: Preparação do Ambiente
+## 🧱 Etapa 2: Preparação do Ambiente
 
-### 1. Inicialização do projeto
+### 🔹 1. Inicialização do Projeto
 
 ```bash
 npm init -y
@@ -19,32 +28,23 @@ npm install express
 npm start
 ```
 
-### 2. Instalação de pacotes
+> 💡 Recomenda-se criar o arquivo `app.js` logo após a instalação do Express para iniciar o servidor.
+
+---
+
+### 🔹 2. Instalação dos Pacotes Essenciais
 
 ```bash
-npm install "bcrypt": "^6.0.0",
-        "chart.js": "^4.5.0",
-        "cookie-parser": "~1.4.4",
-        "debug": "~2.6.9",
-        "dotenv": "^16.5.0",
-        "express": "~4.16.1",
-        "http-errors": "~1.6.3",
-        "install": "^0.13.0",
-        "jade": "~1.11.0",
-        "jsonwebtoken": "^9.0.2",
-        "morgan": "~1.9.1",
-        "multer": "^2.0.1",
-        "npm": "^11.4.2",
-        "pdfkit": "^0.17.1",
-        "pg": "^8.16.0",
-        "pug": "^3.0.3",
-        "sharp": "^0.34.2",
-        "uuid": "^11.1.0"
+npm install bcrypt chart.js cookie-parser debug dotenv express http-errors install jade jsonwebtoken morgan multer npm pdfkit pg pug sharp uuid
 ```
 
-### 3. Estrutura inicial de pastas
+> 💡 Utilize `dotenv` para gerenciar variáveis de ambiente como porta, conexão com banco e segredo do JWT.
 
-```plaintext
+---
+
+### 🔹 3. Estrutura Inicial do Projeto
+
+```
 /docs
   algoritmo-requisicoes.md
   estrutura-api.md
@@ -56,6 +56,7 @@ npm install "bcrypt": "^6.0.0",
   jsonwebtoken.js
 
 /public
+  (arquivos públicos como imagens e CSS)
 
 /routes
   /app
@@ -87,4 +88,3 @@ package-lock.json
 package.json
 README.md
 ```
-
